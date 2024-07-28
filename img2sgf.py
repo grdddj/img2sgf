@@ -668,6 +668,7 @@ def find_grid():
             identify_board()
             board_ready = True
             save_button.configure(state=tk.ACTIVE)
+            copy_to_clipboard_button.configure(state=tk.ACTIVE)
     draw_board()  # if board_ready is false, this will blank out the board
 
 
@@ -932,6 +933,13 @@ def save_SGF():
     sgf.write(to_SGF(full_board))
     sgf.close()
     log("Saved to file " + output_file)
+
+
+def copy_to_clipboard(root):
+    sgf = to_SGF(full_board)
+    root.clipboard_clear()
+    root.clipboard_append(sgf)
+    log("Copied to clipboard")
 
 
 def toggle_settings(status=None):
@@ -1233,13 +1241,15 @@ processed_frame.columnconfigure(0, weight=1)
 processed_frame.columnconfigure(1, weight=1)
 
 output_text = tk.Label(output_frame, text="Detected board position")
-output_text.grid(row=0, columnspan=2, pady=10)
+output_text.grid(row=0, columnspan=3, pady=10)
+copy_to_clipboard_button = tk.Button(output_frame, text="copy2clipboard", command=lambda: copy_to_clipboard(main_window), state=tk.DISABLED)
+copy_to_clipboard_button.grid(row=1, column=0)
 save_button = tk.Button(output_frame, text="save", command=save_SGF, state=tk.DISABLED)
-save_button.grid(row=1, column=0)
+save_button.grid(row=1, column=1)
 reset_button = tk.Button(
     output_frame, text="reset", command=reset_board, state=tk.DISABLED
 )
-reset_button.grid(row=1, column=1)
+reset_button.grid(row=1, column=2)
 output_instructions = tk.Label(
     output_frame,
     text="""Click on board to change between empty,
